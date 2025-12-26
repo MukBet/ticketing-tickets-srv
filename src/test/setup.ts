@@ -41,7 +41,7 @@ global.signin = () => {
   // {"jwt":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5NDg1NTk4ZTRjYThmZDEwZjViY2JlNSIsImVtYWlsIjoidGVzdEB0ZXN0LnRlIiwiaWF0IjoxNzY2MzQ4MTg0fQ.mI5h9kIpPLs-QmHqVZorgD5EcOX3NGfp91g9OMPSk_Y"}
 
   const payload = {
-    id: 'asdasdas',
+    id: new mongoose.Types.ObjectId().toHexString(),
     email: 'test@test.te'
   };
 

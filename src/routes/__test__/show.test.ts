@@ -1,13 +1,15 @@
 import request from "supertest";
 import { app } from '../../app';
 import { Ticket } from "../../models/tickets";
+import mongoose from "mongoose";
 
 it('It returns 404 if the ticket is not found', async () => {
+  const id = new mongoose.Types.ObjectId().toHexString();
   const response = await request(app)
-    .get('/api/tickets/fake')
-    .send();
-  console.log('response.body')
-  console.log(response.body)
+    .get(`/api/tickets/${id}`)
+    .send()
+    .expect(404);
+
 });
 
 it('It returns the ticket if the ticket is found', async () => {
@@ -22,8 +24,7 @@ it('It returns the ticket if the ticket is found', async () => {
       price
     })
     .expect(201);
-  console.log("!!!!!!!!!response.body.id");
-  console.log(response.body.id);
+
   const ticketResponse = await request(app)
     .get(`/api/tickets/${response.body.id}`)
     .send()
