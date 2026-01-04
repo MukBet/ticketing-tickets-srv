@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import { app } from './app';
+import { natsWrapper } from './nats-wrapper';
 
 const start = async () => {
 
@@ -8,6 +9,15 @@ const start = async () => {
   }
 
   try {
+    await natsWrapper.connect('ticketing', 'abcdef', 'http://nats-srv:4222'); // `ticketing` because that's the cluster id we set in nats-depl.yaml, the same for `nats-srv:4222` because that's the service name we set in nats-srv.yaml
+
+    natsWrapper.client.on('close', () => {
+      console.log(' NATS conection closed');
+      process.exit();
+    });
+    process.on('SIGINT', () => natsWrapper.client.close());
+    process.on('SIGTERM', () => natsWrapper.client.close());
+
     await mongoose.connect('mongodb://auth-mongo-srv:27017/auth');
     console.log('Connected to MongoDB!');
   } catch (err) {
