@@ -3,6 +3,8 @@ import { app } from '../../app';
 import { Ticket } from "../../models/tickets";
 import mongoose from "mongoose";
 
+jest.mock('../../nats-wrapper');
+
 it('returns 404 if the provided ID does not exist', async () => {
   const id = new mongoose.Types.ObjectId().toHexString();
   await request(app)
