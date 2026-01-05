@@ -8,8 +8,28 @@ const start = async () => {
     throw new Error('JWT_KEY must be defined!');
   }
 
+  if (!process.env.MONGO_URI) {
+    throw new Error('MONGO_URI must be defined!');
+  }
+
+  if (!process.env.NATS_CLIENT_ID) {
+    throw new Error('NATS_CLIENT_ID must be defined!');
+  }
+
+  if (!process.env.NATS_URL) {
+    throw new Error('NATS_URL must be defined!');
+  }
+
+  if (!process.env.NATS_CLUSTER_ID) {
+    throw new Error('NATS_CLUSTER_ID must be defined!');
+  }
+
   try {
-    await natsWrapper.connect('ticketing', 'abcdef', 'http://nats-srv:4222'); // `ticketing` because that's the cluster id we set in nats-depl.yaml, the same for `nats-srv:4222` because that's the service name we set in nats-srv.yaml
+    await natsWrapper.connect(
+      process.env.NATS_CLUSTER_ID,
+      process.env.NATS_CLIENT_ID,
+      process.env.NATS_URL
+    ); // `ticketing` because that's the cluster id we set in nats-depl.yaml, the same for `nats-srv:4222` because that's the service name we set in nats-srv.yaml
 
     natsWrapper.client.on('close', () => {
       console.log(' NATS conection closed');
@@ -18,7 +38,7 @@ const start = async () => {
     process.on('SIGINT', () => natsWrapper.client.close());
     process.on('SIGTERM', () => natsWrapper.client.close());
 
-    await mongoose.connect('mongodb://auth-mongo-srv:27017/auth');
+    await mongoose.connect(process.env.MONGO_URI);
     console.log('Connected to MongoDB!');
   } catch (err) {
     console.error(err);
