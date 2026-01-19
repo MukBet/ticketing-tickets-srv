@@ -1,7 +1,7 @@
 import express, { Request, Response } from 'express'
 import { requireAuth, validateRequest } from '@motway_ticketing/common';
 import { body } from 'express-validator';
-import { Ticket } from '../models/tickets';
+import { Ticket } from '../models/ticket';
 import { TicketCreatedPublisher } from '../events/publishers/ticket-created-publisher';
 import { natsWrapper } from '../nats-wrapper';
 
@@ -30,7 +30,8 @@ router.post('/api/tickets', requireAuth, [
     id: ticket.id,
     title: ticket.title,
     price: ticket.price,
-    userId: ticket.userId
+    userId: ticket.userId,
+    version: ticket.version
   });
 
   res.status(201).send(ticket);
