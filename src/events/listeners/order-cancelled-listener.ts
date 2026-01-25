@@ -1,16 +1,16 @@
-import { Listener, OrderCreatedEvent, Subjects } from '@motway_ticketing/common';
+import { Listener, OrderCancelledEvent, Subjects } from '@motway_ticketing/common';
 import { queueGroupName } from './queue-group-name';
 import { Message } from 'node-nats-streaming';
 import { Ticket } from '../../models/ticket';
 import { TicketUpdatedPublisher } from '../publishers/ticket-updated-publisher';
 
 
-export class OrderCreatedListener extends Listener<OrderCreatedEvent> {
-  readonly subject = Subjects.OrderCreated;
+export class OrderCancelledListener extends Listener<OrderCancelledEvent> {
+  readonly subject = Subjects.OrderCancelled;
   queueGroupName = queueGroupName;
 
-  async onMessage(data: OrderCreatedEvent['data'], msg: Message) {
-    console.log('OrderCreatedListener Event data!', data);
+  async onMessage(data: OrderCancelledEvent['data'], msg: Message) {
+    console.log('OrderCancelledListener Event data!', data);
 
     const ticket = await Ticket.findById(data.ticket.id);
 
@@ -18,7 +18,7 @@ export class OrderCreatedListener extends Listener<OrderCreatedEvent> {
       throw new Error('Ticket not found');
     }
 
-    ticket.set({ orderId: data.id });
+    ticket.set({ orderId: undefined });
     await ticket.save();
 
     await new TicketUpdatedPublisher(this.client).publish({
