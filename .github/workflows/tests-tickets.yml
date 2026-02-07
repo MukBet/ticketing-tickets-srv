@@ -3,7 +3,7 @@ name: tests-tickets
 on:
   pull_request:
     paths:
-      - 'src/events/routes/**' # Just to see case when was indicated what folders\files we want to run tests on, but we can also run tests on all files, just by not indicating any folders\files here.
+      - 'src/routes/**' # Just to see case when was indicated what folders\files we want to run tests on, but we can also run tests on all files, just by not indicating any folders\files here.
 
 jobs:
   build:
